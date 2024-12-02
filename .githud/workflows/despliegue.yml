@@ -21,7 +21,7 @@ jobs:
     - name: Deploy to EC2
       run: |
         echo "Conectándose a la instancia de EC2..."
-        ssh -o StrictHostKeyChecking=no ubuntu@98.85.130.99 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@54.237.197.179 << 'EOF'
           echo "Actualizando el servidor..."
           
           # Detener el servicio Nginx para evitar que esté usando archivos viejos (opcional)
