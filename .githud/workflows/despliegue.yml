@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # Cambia "main" si tu rama principal tiene otro nombre
+      - master  # Cambia "main" si tu rama principal tiene otro nombre
 
 jobs:
   deploy:
@@ -21,7 +21,7 @@ jobs:
     - name: Deploy to EC2
       run: |
         echo "Conectándose a la instancia de EC2..."
-        ssh -o StrictHostKeyChecking=no ubuntu@54.237.197.179 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@50.17.121.114  << 'EOF'
           echo "Actualizando el servidor..."
           
           # Detener el servicio Nginx para evitar que esté usando archivos viejos (opcional)
