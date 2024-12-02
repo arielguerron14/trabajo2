@@ -1,0 +1,46 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # Cambia "main" si tu rama principal tiene otro nombre
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Deploy to EC2
+      run: |
+        echo "Conectándose a la instancia de EC2..."
+        ssh -o StrictHostKeyChecking=no ubuntu@98.85.130.99 << 'EOF'
+          echo "Actualizando el servidor..."
+          
+          # Detener el servicio Nginx para evitar que esté usando archivos viejos (opcional)
+          sudo systemctl stop nginx || true
+          
+          # Navegar al directorio del proyecto
+          cd /home/ubuntu  # Ajusta según la ruta donde esté tu código
+
+          # Si usas Git, puedes hacer un pull para actualizar, pero aquí solo vamos a subir el archivo HTML
+          # git pull origin main  # Si usas Git, descomenta esta línea
+
+          # Copiar el archivo index.html al directorio de Nginx
+          sudo cp /home/ubuntu/index.html /usr/share/nginx/html/index.html
+          
+          # Asegurarse de que los permisos sean correctos
+          sudo chown -R ubuntu:ubuntu /usr/share/nginx/html
+
+          # Reiniciar Nginx para que cargue el nuevo index.html
+          sudo systemctl restart nginx
+
+          echo "Despliegue completado con éxito!"
+        EOF
